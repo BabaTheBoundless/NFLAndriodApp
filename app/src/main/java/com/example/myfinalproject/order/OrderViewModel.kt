@@ -1,5 +1,6 @@
 package com.example.myfinalproject.order
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,15 +14,20 @@ class OrderViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(OrderUiState())
     val uiState: StateFlow<OrderUiState> = _uiState.asStateFlow()
 
+
+    val apiKey = "050f76fd2b784f7db88f162dd4932831"
+
     val teamList = MutableLiveData<List<Team>>()
 
     fun fetchTeams() {
         viewModelScope.launch {
             try {
-                val response = RetrofitClient.apiService.getTeams()
+                val response = RetrofitClient.apiService.getTeams(apiKey)
+                Log.d("OrderViewModel", "Fetched teams: ${response.size}")
                 teamList.postValue(response)
             } catch (e: Exception) {
                 e.printStackTrace()
+                Log.d("OrderViewModel", "Error in OrderViewModel: ${e.message}")
             }
         }
     }

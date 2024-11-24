@@ -2,6 +2,7 @@ package com.example.myfinalproject.screens
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.myfinalproject.order.OrderViewModel
 
 class TeamActivity : AppCompatActivity() {
+
 
     private lateinit var teamViewModel: OrderViewModel
 
@@ -25,24 +27,33 @@ class TeamActivity : AppCompatActivity() {
             orientation = LinearLayout.VERTICAL
             setPadding(16, 16, 16, 16)
         }
+        Log.d("HelloTag", "hi")
         scrollView.addView(linearLayout)
         setContentView(scrollView)
 
-        // Initialize ViewModel
-        teamViewModel = ViewModelProvider(this).get(OrderViewModel::class.java)
 
+        // Initialize ViewModel
+        teamViewModel = ViewModelProvider(this)[OrderViewModel::class.java]
+
+
+        Log.d("HelloTag", "still working?")
         // Observe data and populate TextViews
         teamViewModel.teamList.observe(this) { teams ->
+            Log.d("HelloTag", "WORKING")
             linearLayout.removeAllViews() // Clear previous data
+
+            Log.d("TeamActivity", "Teams: $teams")
+            Log.d("HelloTag", "heloo world")
 
             teams.forEach { team ->
                 val textView = TextView(this).apply {
-                    text = "Team: ${team.teamName}, Wins: ${team.wins}, Losses: ${team.losses}"
+                    text = "Team: ${team.Name}, Wins: ${team.Wins}, Losses: ${team.Losses}"
                     textSize = 16f
                     setPadding(8, 8, 8, 8)
                 }
                 linearLayout.addView(textView)
             }
         }
+        teamViewModel.fetchTeams()
     }
 }

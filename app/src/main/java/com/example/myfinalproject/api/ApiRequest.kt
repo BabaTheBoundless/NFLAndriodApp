@@ -7,11 +7,12 @@ import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
-
+import retrofit2.http.Query
 
 
 val apiKey = "050f76fd2b784f7db88f162dd4932831"
 
+const val base_url = "https://api.sportsdata.io/v3/nfl/scores/json/Standings/2023/"
 const val api = "https://api.sportsdata.io/v3/nfl/scores/json/Standings/2023?key=050f76fd2b784f7db88f162dd4932831"
 
 
@@ -19,17 +20,15 @@ const val api = "https://api.sportsdata.io/v3/nfl/scores/json/Standings/2023?key
 //defining api service
 interface ApiService {
     @GET(api) //api endpoint
-    suspend fun getTeams(): List<Team>
+    suspend fun getTeams(@Query("key") apiKey: String): List<Team>
 
 }
 
 //create Retrofit Instance
 object RetrofitClient {
-    private const val BASE_URL = "https://your-api-base-url.com/" // Replace with your API base URL
-
     val apiService: ApiService by lazy {
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(base_url)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiService::class.java)
