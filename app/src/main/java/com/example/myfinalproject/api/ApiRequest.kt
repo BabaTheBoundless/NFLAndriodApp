@@ -20,6 +20,7 @@ const val api = "https://api.sportsdata.io/v3/nfl/scores/json/Standings/2023?key
 interface ApiService {
     @GET(api) //api endpoint
     suspend fun getTeams(): List<Team>
+
 }
 
 //create Retrofit Instance
