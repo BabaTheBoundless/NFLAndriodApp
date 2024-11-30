@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.myfinalproject.api.RetrofitClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
@@ -23,6 +24,14 @@ class OrderViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = RetrofitClient.apiService.getTeams(apiKey)
+                val teamNames = response.map { it.Name }
+
+                _uiState.update { currentState ->
+                    currentState.copy(Name = teamNames.toString())
+                }
+
+
+                Log.d("OrderViewModel", "team names: $teamNames$" )
                 Log.d("OrderViewModel", "Fetched teams: ${response.size}")
                 teamList.postValue(response)
             } catch (e: Exception) {

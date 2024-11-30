@@ -13,5 +13,7 @@ data class Team(
     val PointsAgainst: Int, //points given up
     val DivisionRank: Int,
     val ConferenceRank: Int,
-
 )
+
+data class Conference(val name: String, val division: List<Division>)
+data class Division(val name: String, val teams: List<Team>)
