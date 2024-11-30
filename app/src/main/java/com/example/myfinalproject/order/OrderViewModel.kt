@@ -26,8 +26,17 @@ class OrderViewModel : ViewModel() {
                 val response = RetrofitClient.apiService.getTeams(apiKey)
                 val teamNames = response.map { it.Name }
 
+                val conferences = response
+                    .groupBy { it.Conference }
+                    .map { (conferenceName, teams) ->
+                        val divisions = teams.groupBy { it.Division }.map { (divisionName, divisionTeams) ->
+                            Division(divisionName, divisionTeams)
+                        }
+                        Conference(conferenceName, divisions)
+                    }
+
                 _uiState.update { currentState ->
-                    currentState.copy(Name = teamNames.toString())
+                    currentState.copy(conferences = conferences)
                 }
 
 

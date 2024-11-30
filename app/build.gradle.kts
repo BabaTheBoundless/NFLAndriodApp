@@ -55,6 +55,11 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
+    implementation(libs.ui)
+    implementation (libs.androidx.material)
+    implementation (libs.androidx.foundation)
+    implementation (libs.androidx.runtime)
+
     implementation(libs.kotlinx.coroutines.core)
 
     implementation(libs.androidx.core.ktx)
