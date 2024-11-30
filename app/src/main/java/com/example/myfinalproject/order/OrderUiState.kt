@@ -6,3 +6,4 @@ data class OrderUiState(
     val selectedVision: Division? = null,
     val selectedTeam: Team? = null,
 )
+
