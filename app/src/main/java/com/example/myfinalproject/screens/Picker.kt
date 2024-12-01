@@ -105,6 +105,9 @@ fun DivisionPicker(
 fun TeamPicker(teams: List<Team>, onTeamSelected: (Team) -> Unit) {
     var selectedTeam by remember { mutableStateOf<Team?>(null) }
 
+    if (teams.isEmpty()) {
+        Text("Teams in TeamPicker is empty")
+    }
     LazyColumn {
         items(teams) { team ->
             Button(
@@ -125,9 +128,7 @@ fun TeamPicker(teams: List<Team>, onTeamSelected: (Team) -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NFLApp(
-
     viewModel: OrderViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-
     navController: NavHostController = rememberNavController()
     ) {
 
@@ -168,8 +169,15 @@ fun NFLApp(
                     divisions = uiState.selectedConference?.division ?: emptyList(),
                     onDivisionSelected = { division ->
                         viewModel.onDivisionSelected(division)
-                        navController.navigate(PickerScreen.Team.name) }
-                )
+                        navController.navigate(PickerScreen.Team.name)
+                    })
+            }
+            composable(route = PickerScreen.Team.name) {
+                val teamsInDivision = uiState.teams
+                TeamPicker(teams = teamsInDivision) {}
+
+                    
+
             }
 
         }
