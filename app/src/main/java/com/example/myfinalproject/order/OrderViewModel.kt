@@ -20,6 +20,18 @@ class OrderViewModel : ViewModel() {
 
     val teamList = MutableLiveData<List<Team>>()
 
+
+
+    fun onConferenceSelected(conference: Conference) {
+        _uiState.value = _uiState.value.copy(selectedConference = conference)
+    }
+
+    fun onDivisionSelected(division: Division) {
+        _uiState.value = _uiState.value.copy(selectedDivision = division)
+    }
+
+
+
     fun fetchTeams() {
         viewModelScope.launch {
             try {
@@ -38,8 +50,6 @@ class OrderViewModel : ViewModel() {
                 _uiState.update { currentState ->
                     currentState.copy(conferences = conferences)
                 }
-
-
                 Log.d("OrderViewModel", "team names: $teamNames$" )
                 Log.d("OrderViewModel", "Fetched teams: ${response.size}")
                 teamList.postValue(response)
