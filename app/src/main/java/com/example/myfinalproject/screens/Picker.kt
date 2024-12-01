@@ -168,7 +168,7 @@ fun NFLApp(
                 DivisionPicker(
                     divisions = uiState.selectedConference?.division ?: emptyList(),
                     onDivisionSelected = { division ->
-                        viewModel.onDivisionSelected(division)
+                        uiState.selectedConference?.let { it1 -> viewModel.onDivisionSelected(division, conference = it1) }
                         navController.navigate(PickerScreen.Team.name)
                     })
             }

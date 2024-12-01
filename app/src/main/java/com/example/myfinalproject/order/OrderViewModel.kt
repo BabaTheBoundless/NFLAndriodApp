@@ -23,12 +23,14 @@ class OrderViewModel : ViewModel() {
 
     fun onConferenceSelected(conference: Conference) {
         _uiState.value = _uiState.value.copy(selectedConference = conference)
+        fetchTeamsInConference(conference)
     }
 
-    fun onDivisionSelected(division: Division) {
+    fun onDivisionSelected(division: Division, conference: Conference) {
         _uiState.value = _uiState.value.copy(selectedDivision = division)
-
-        fetchTeamsInDivision(division)
+        fetchTeamsInDivisionAndConference(
+            selectedDivision = division,
+            selectedConference = conference)
     }
 
 
@@ -73,6 +75,92 @@ class OrderViewModel : ViewModel() {
             }
         }
     }
+
+
+    fun fetchTeamsInConference(selectedConference: Conference?) {
+        viewModelScope.launch {
+            try {
+                //fetch teams from the API
+                val response = RetrofitClient.apiService.getTeams(apiKey)
+
+                //filter the teams to only include those in the selected conference
+                val filteredTeams = response.filter { team ->
+                    team.Conference == selectedConference?.name
+                }
+
+                Log.d("OrderViewModel", "Filtered teams: ${filteredTeams.size}")
+
+                // Group teams by conference and division
+                val conferences = response
+                    .groupBy { it.Conference }
+                    .map { (conferenceName, teams) ->
+                        val divisions = teams.groupBy { it.Division }.map { (divisionName, divisionTeams) ->
+                            Division(divisionName, divisionTeams)
+                        }
+                        Conference(conferenceName, divisions)
+                    }
+
+                // Update the UI state
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        selectedConference = selectedConference, // Update selectedConference
+                        teams = filteredTeams // Update the teams with the filtered list
+                    )
+                }
+
+                // Update the LiveData or other stateful objects
+                teamList.postValue(filteredTeams)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Log.d("OrderViewModel", "Error in OrderViewModel: ${e.message}")
+            }
+        }
+    }
+
+
+    fun fetchTeamsInDivisionAndConference(selectedDivision: Division, selectedConference: Conference) {
+        viewModelScope.launch {
+            try {
+                // Fetch teams from the API
+                val response = RetrofitClient.apiService.getTeams(apiKey)
+
+                // Filter the teams by conference and division
+                val filteredTeams = response.filter { team ->
+                    team.Conference == selectedConference.name && team.Division == selectedDivision.name
+                }
+
+                Log.d("OrderViewModel", "Filtered teams: ${filteredTeams.size}")
+
+                // Group teams by conference and division (if needed for other UI updates)
+                val conferences = response
+                    .groupBy { it.Conference }
+                    .map { (conferenceName, teams) ->
+                        val divisions = teams.groupBy { it.Division }.map { (divisionName, divisionTeams) ->
+                            Division(divisionName, divisionTeams)
+                        }
+                        Conference(conferenceName, divisions)
+                    }
+
+                // Update the UI state
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        selectedDivision = selectedDivision, // Update selected division
+                        teams = filteredTeams // Update the teams with the filtered list
+                    )
+                }
+
+                // Update the LiveData or other stateful objects
+                teamList.postValue(filteredTeams)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Log.d("OrderViewModel", "Error in OrderViewModel: ${e.message}")
+            }
+        }
+    }
+
+
 
 
 
