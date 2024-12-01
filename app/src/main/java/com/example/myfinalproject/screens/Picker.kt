@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DisplayMode.Companion.Picker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -44,9 +45,9 @@ import com.example.myfinalproject.order.Team
 
 
 enum class PickerScreen(val title: String) {
-    Conference(title = "pick conference"),
-    Division(title = "pick division"),
-    Team(title = "pick team")
+    Conference(title = "Pick conference"),
+    Division(title = "Pick division"),
+    Team(title = "Pick team")
 }
 
 @Composable
@@ -58,6 +59,11 @@ fun ConferencePicker(
 
     LazyColumn {
         items(conferences) { conference ->
+            if (conferences.isEmpty()) {
+                Log.d("ConferencePicker", "No conferences available")
+                Text("No conferences available", modifier = Modifier.padding(16.dp))
+            }
+
             Button(
                 onClick = { onConferenceSelected(conference) },
                 modifier = Modifier
@@ -162,13 +168,10 @@ fun NFLApp(
                     divisions = uiState.selectedConference?.division ?: emptyList(),
                     onDivisionSelected = { division ->
                         viewModel.onDivisionSelected(division)
-                    }
+                        navController.navigate(PickerScreen.Team.name) }
                 )
-                    
-
             }
-            
-            
+
         }
         
 
@@ -185,7 +188,7 @@ fun NFLAppBar(
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    TopAppBar(
+    CenterAlignedTopAppBar(
         title = { Text(currentScreen.title) },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
