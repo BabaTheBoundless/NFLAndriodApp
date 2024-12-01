@@ -35,35 +35,36 @@ class OrderViewModel : ViewModel() {
     fun fetchTeamsInDivision(selectedDivision: Division?) {
         viewModelScope.launch {
             try {
-                //fetch teams from the API
+                // Fetch teams from the API
                 val response = RetrofitClient.apiService.getTeams(apiKey)
 
-                //filter the teams to only include those in the selected division
+                // Filter the teams to only include those in the selected division
                 val filteredTeams = response.filter { team ->
                     team.Division == selectedDivision?.name
                 }
 
-                //optionally log the filtered teams (or the count)
+                // Optionally log the filtered teams (or the count)
                 Log.d("OrderViewModel", "Filtered teams: ${filteredTeams.size}")
 
-                //if there are any teams for the selected division, update the UI state
+                // If there are any teams for the selected division, update the UI state
                 val conferences = response
                     .groupBy { it.Conference }
                     .map { (conferenceName, teams) ->
-                        val divisions =
-                            teams.groupBy { it.Division }.map { (divisionName, divisionTeams) ->
-                                Division(divisionName, divisionTeams)
-                            }
+                        val divisions = teams.groupBy { it.Division }.map { (divisionName, divisionTeams) ->
+                            Division(divisionName, divisionTeams)
+                        }
                         Conference(conferenceName, divisions)
                     }
 
-                //update the UI state with the filtered conferences (if needed)
+                // Update the UI state with the filtered conferences and teams
                 _uiState.update { currentState ->
-                    currentState.copy(selectedDivision = )
-                    currentState.copy(conferences = conferences)
+                    currentState.copy(
+                        selectedDivision = selectedDivision, // Assign the selected division
+                        teams = filteredTeams // Update the teams with the filtered list
+                    )
                 }
 
-                //update the state with only the filtered teams
+                // Update the state with only the filtered teams
                 teamList.postValue(filteredTeams)
 
             } catch (e: Exception) {
@@ -72,6 +73,7 @@ class OrderViewModel : ViewModel() {
             }
         }
     }
+
 
 
 
