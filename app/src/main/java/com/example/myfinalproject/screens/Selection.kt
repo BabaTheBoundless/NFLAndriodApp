@@ -18,7 +18,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.example.myfinalproject.order.Conference
 import com.example.myfinalproject.order.Division
@@ -72,13 +75,19 @@ fun DisplayTeamDetails(team: Team) {
             val myPercentageColor = if (team.Percentage < 0.500) {
                 Color.Red
 
+            } else if (team.Percentage > .500) {
+                Color(0xFF008731)
             } else {
-                Color.Green
+                Color(0xFF000000)
             }
             Text(
-                text = "Win Percentage: ${team.Percentage}%",
-                style = MaterialTheme.typography.bodyLarge,
-                //color = myPercentageColor
+                text = buildAnnotatedString {
+                    append("Win Percentage: ")
+                    withStyle(style = SpanStyle(color = myPercentageColor)) {
+                        append("${team.Percentage}%")
+                    }
+                },
+                style = MaterialTheme.typography.bodyLarge
             )
 
             Divider()
@@ -99,12 +108,12 @@ fun DisplayTeamDetails(team: Team) {
             //rankings
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
-                    text = "Division Rank: ${team.DivisionRank}",
+                    text = "Division Rank: ${team.DivisionRank}th",
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = "Conference Rank: ${team.ConferenceRank}",
+                    text = "Conference Rank: ${team.ConferenceRank}th",
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold
                 )
