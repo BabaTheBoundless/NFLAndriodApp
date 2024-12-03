@@ -32,6 +32,18 @@ import com.example.myfinalproject.order.Team
 @Composable
 fun DisplayTeamDetails(team: Team) {
 
+    val point_differential = team.PointsFor - team.PointsAgainst
+    val formattedPointDifferential = if (point_differential > 0) {
+        "+$point_differential"
+    } else {
+        "$point_differential"
+    }
+
+    val pointDifferentialColor = if (point_differential < 0) {
+        Color.Red
+    } else {
+        Color(0xFF008731)
+    }
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -74,7 +86,6 @@ fun DisplayTeamDetails(team: Team) {
             )
             val myPercentageColor = if (team.Percentage < 0.500) {
                 Color.Red
-
             } else if (team.Percentage > .500) {
                 Color(0xFF008731)
             } else {
@@ -92,6 +103,8 @@ fun DisplayTeamDetails(team: Team) {
 
             Divider()
 
+
+
             //points and rankings
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
@@ -100,6 +113,15 @@ fun DisplayTeamDetails(team: Team) {
                 )
                 Text(
                     text = "Points Against: ${team.PointsAgainst}",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        append("Point Differential: ")
+                        withStyle(style = SpanStyle(color = pointDifferentialColor)) {
+                            append(formattedPointDifferential)
+                        }
+                    },
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
