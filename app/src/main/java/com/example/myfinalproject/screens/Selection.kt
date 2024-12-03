@@ -21,23 +21,23 @@ import com.example.myfinalproject.order.Team
 fun TeamSelectionScreen(viewModel: OrderViewModel) {
     val uiState by viewModel.uiState.collectAsState()
 
-    // Step 1: Pick Conference
+    //pick Conference
     var selectedConference by remember { mutableStateOf<Conference?>(null) }
 
-    // Step 2: Pick Division
+    //pick Division
     var selectedDivision by remember { mutableStateOf<Division?>(null) }
 
-    // Step 3: Pick Team
+    //pick Team
     var selectedTeam by remember { mutableStateOf<Team?>(null) }
 
     Column(modifier = Modifier.padding(16.dp)) {
-        // Conference Picker
+        //conference Picker
         if (selectedConference == null) {
             ConferencePicker(
                 conferences = uiState.conferences,
                 onConferenceSelected = { conference ->
                     selectedConference = conference
-                    selectedDivision = null // Reset division on conference change
+                    selectedDivision = null //reset division on conference change
                 }
             )
         }
@@ -62,7 +62,7 @@ fun TeamSelectionScreen(viewModel: OrderViewModel) {
             )
         }
 
-        // Show selected team details
+        //show selected team details
         selectedTeam?.let {
             DisplayTeamDetails(team = it)
             Text("hello")

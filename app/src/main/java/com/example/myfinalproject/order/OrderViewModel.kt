@@ -122,17 +122,17 @@ class OrderViewModel : ViewModel() {
     fun fetchTeamsInDivisionAndConference(selectedDivision: Division, selectedConference: Conference) {
         viewModelScope.launch {
             try {
-                // Fetch teams from the API
+                //fetch the teams from the API
                 val response = RetrofitClient.apiService.getTeams(apiKey)
 
-                // Filter the teams by conference and division
+                //filter the teams by conference and division
                 val filteredTeams = response.filter { team ->
                     team.Conference == selectedConference.name && team.Division == selectedDivision.name
                 }
 
                 Log.d("OrderViewModel", "Filtered teams: ${filteredTeams.size}")
 
-                // Group teams by conference and division (if needed for other UI updates)
+                //group teams by conference and division (if needed for other UI updates)
                 val conferences = response
                     .groupBy { it.Conference }
                     .map { (conferenceName, teams) ->
@@ -142,15 +142,15 @@ class OrderViewModel : ViewModel() {
                         Conference(conferenceName, divisions)
                     }
 
-                // Update the UI state
+                //pdate the UI state
                 _uiState.update { currentState ->
                     currentState.copy(
-                        selectedDivision = selectedDivision, // Update selected division
-                        teams = filteredTeams // Update the teams with the filtered list
+                        selectedDivision = selectedDivision, //update selected division
+                        teams = filteredTeams //update the teams with the filtered list
                     )
                 }
 
-                // Update the LiveData or other stateful objects
+                //update the live-data
                 teamList.postValue(filteredTeams)
 
             } catch (e: Exception) {
@@ -159,10 +159,6 @@ class OrderViewModel : ViewModel() {
             }
         }
     }
-
-
-
-
 
 
     fun fetchTeams() {

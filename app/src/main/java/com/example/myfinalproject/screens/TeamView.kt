@@ -21,7 +21,7 @@ class TeamActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Initialize ScrollView and LinearLayout
+        //initialize ScrollView and LinearLayout
         val scrollView = ScrollView(this)
         linearLayout = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -32,15 +32,15 @@ class TeamActivity : AppCompatActivity() {
         setContentView(scrollView)
 
 
-        // Initialize ViewModel
+        //initialize ViewModel
         teamViewModel = ViewModelProvider(this)[OrderViewModel::class.java]
 
 
         Log.d("HelloTag", "still working?")
-        // Observe data and populate TextViews
+        //observe data and populate TextViews
         teamViewModel.teamList.observe(this) { teams ->
             Log.d("HelloTag", "WORKING")
-            linearLayout.removeAllViews() // Clear previous data
+            linearLayout.removeAllViews() //clear previous data
 
             Log.d("TeamActivity", "Teams: $teams")
             Log.d("HelloTag", "heloo world")

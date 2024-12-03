@@ -47,7 +47,8 @@ import com.example.myfinalproject.order.Team
 enum class PickerScreen(val title: String) {
     Conference(title = "Pick conference"),
     Division(title = "Pick division"),
-    Team(title = "Pick team")
+    Team(title = "Pick team"),
+    TeamData(title = "HEre tem")
 }
 
 @Composable
@@ -174,10 +175,14 @@ fun NFLApp(
             }
             composable(route = PickerScreen.Team.name) {
                 val teamsInDivision = uiState.teams
-                TeamPicker(teams = teamsInDivision) {}
+                TeamPicker(teams = teamsInDivision, onTeamSelected = {  team ->
+                    uiState.selectedTeam = team
+                    navController.navigate(PickerScreen.TeamData.name)
 
-                    
-
+                }) 
+            }
+            composable(route = PickerScreen.TeamData.toString()) {
+                uiState.selectedTeam?.let { it1 -> DisplayTeamDetails(team = it1) }
             }
 
         }

@@ -1,10 +1,10 @@
 package com.example.myfinalproject.order
 
 data class Team(
-    val Name: String,
+    val Name: String, //team name i.e, Tennessee Titans
     val Conference: String,
     val Division: String,
-    val Team: String,
+    val Team: String, //team abbreviation i,e, TEN
     val Wins: Int,
     val Losses: Int,
     val Ties: Int,
