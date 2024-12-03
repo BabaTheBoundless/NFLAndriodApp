@@ -48,7 +48,7 @@ enum class PickerScreen(val title: String) {
     Conference(title = "Pick conference"),
     Division(title = "Pick division"),
     Team(title = "Pick team"),
-    TeamData(title = "HEre tem")
+    TeamData(title = "Team Info")
 }
 
 @Composable
