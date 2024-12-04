@@ -5,6 +5,6 @@ data class OrderUiState(
     val selectedConference: Conference? = null,
     val selectedDivision: Division? = null,
     var selectedTeam: Team? = null,
-    val teams: List<Team> = emptyList() //teams in the selected divisons
+    val teams: List<Team> = emptyList() //teams in the selected divisions
 )
 
