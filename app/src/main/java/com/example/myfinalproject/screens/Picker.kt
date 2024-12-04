@@ -4,7 +4,12 @@ package com.example.myfinalproject.screens
 import android.annotation.SuppressLint
 import android.util.Log
 import android.widget.Button
+import android.widget.ImageView
 import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,13 +36,16 @@ import androidx.navigation.compose.NavHost
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.myfinalproject.R
 import com.example.myfinalproject.order.Conference
 import com.example.myfinalproject.order.Division
 import com.example.myfinalproject.order.OrderViewModel
@@ -57,32 +65,44 @@ fun ConferencePicker(
     onConferenceSelected: (Conference) -> Unit,
 ) {
     var selectedConference by remember { mutableStateOf<Conference?>(null) }
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
 
-    LazyColumn {
-        items(conferences) { conference ->
-            if (conferences.isEmpty()) {
-                Log.d("ConferencePicker", "No conferences available")
-                Text("No conferences available", modifier = Modifier.padding(16.dp))
-            }
+        LazyColumn {
+            items(conferences) { conference ->
+                if (conferences.isEmpty()) {
+                    Log.d("ConferencePicker", "No conferences available")
+                    Text("No conferences available", modifier = Modifier.padding(16.dp))
+                }
 
-            Button(
-                onClick = { onConferenceSelected(conference) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) {
-                Text(text = conference.name)
+                Button(
+                    onClick = { onConferenceSelected(conference) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    Text(text = conference.name)
 
+                }
             }
         }
+        Image(
+            painter = painterResource(id = R.drawable.nfl_logo),
+            contentDescription = null
+        )
     }
 }
 
 @Composable
 fun DivisionPicker(
     divisions: List<Division>,
-    onDivisionSelected: (Division) -> Unit
+    onDivisionSelected: (Division) -> Unit,
+    selectedConference: String
 ) {
+
     var selectedDivision by remember { mutableStateOf<Division?>(null) }
 
     LazyColumn {
@@ -96,7 +116,7 @@ fun DivisionPicker(
                     .fillMaxWidth()
                     .padding(8.dp)
             ) {
-                Text(text = division.name)
+                Text(text = "${selectedConference} ${division.name}")
             }
         }
     }
@@ -166,12 +186,17 @@ fun NFLApp(
                 )
             }
             composable(route = PickerScreen.Division.name) {
-                DivisionPicker(
-                    divisions = uiState.selectedConference?.division ?: emptyList(),
-                    onDivisionSelected = { division ->
-                        uiState.selectedConference?.let { it1 -> viewModel.onDivisionSelected(division, conference = it1) }
-                        navController.navigate(PickerScreen.Team.name)
-                    })
+                uiState.selectedConference?.let { selectedConference ->
+                    val conferenceName = selectedConference.name
+                    DivisionPicker(
+                        divisions = uiState.selectedConference?.division ?: emptyList(),
+                        onDivisionSelected = { division ->
+                            viewModel.onDivisionSelected(division, conference = selectedConference)
+                            navController.navigate(PickerScreen.Team.name)
+                        },
+                        selectedConference = conferenceName
+                    )
+                }
             }
             composable(route = PickerScreen.Team.name) {
                 val teamsInDivision = uiState.teams

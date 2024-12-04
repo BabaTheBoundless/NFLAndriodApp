@@ -21,6 +21,7 @@ class OrderViewModel : ViewModel() {
     val teamList = MutableLiveData<List<Team>>()
 
 
+
     fun onConferenceSelected(conference: Conference) {
         _uiState.value = _uiState.value.copy(selectedConference = conference)
         fetchTeamsInConference(conference)
@@ -107,7 +108,7 @@ class OrderViewModel : ViewModel() {
                         teams = filteredTeams // Update the teams with the filtered list
                     )
                 }
-
+                Log.d("OrderViewModel", "Selected Conference: ${selectedConference?.name}")
                 // Update the LiveData or other stateful objects
                 teamList.postValue(filteredTeams)
 
